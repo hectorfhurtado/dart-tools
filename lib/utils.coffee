@@ -55,9 +55,14 @@ class Utils
     process = window.process unless process
     if process
       sdkPath = @dartSdkPath()
-      whereCmd = if process.platform == 'win32' then 'where' else 'which'
+
+      isWindows  = process.platform == 'win32'
+      whereCmd   = if isWindows then 'where' else 'which'
+      @executableExtension = if isWindows then '.exe' else ''
+      @toolsExtension = if isWindows then '.bat' else ''
+
       if sdkPath
-        execPath = path.join(sdkPath, 'bin', 'dart')
+        execPath = path.join(sdkPath, 'bin', 'dart' + executableExtension)
         process = spawn whereCmd, [execPath]
 
         process.on 'exit', (code) =>
